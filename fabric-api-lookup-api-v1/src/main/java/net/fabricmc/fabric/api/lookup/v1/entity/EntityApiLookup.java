@@ -45,7 +45,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  * <p>We need to create the EntityApiLookup. We don't need any context so we use {@link Void}.
  * <pre>{@code
  * public class MyApi {
- *     public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.of("mymod", "leveled_entity"), Leveled.class, Void.class);
+ *     public static final EntityApiLookup<Leveled, Void> LEVELED_ENTITY = EntityApiLookup.get(Identifier.fromNamespaceAndPath("modid", "leveled_entity"), Leveled.class, Void.class);
  * }
  * }</pre>
  *
@@ -83,7 +83,7 @@ import net.fabricmc.fabric.impl.lookup.entity.EntityApiLookupImpl;
  *            If no context is necessary, {@link Void} should be used and {@code null} instances should be passed.
  */
 @ApiStatus.NonExtendable
-public interface EntityApiLookup<A, C> {
+public interface EntityApiLookup<A, C extends @Nullable Object> {
 	/**
 	 * Retrieve the {@link EntityApiLookup} associated with an identifier, or create it if it didn't exist yet.
 	 *
@@ -93,7 +93,7 @@ public interface EntityApiLookup<A, C> {
 	 * @return the unique lookup with the passed lookupId.
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
-	static <A, C> EntityApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+	static <A, C extends @Nullable Object> EntityApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return EntityApiLookupImpl.get(lookupId, apiClass, contextClass);
 	}
 
@@ -168,7 +168,7 @@ public interface EntityApiLookup<A, C> {
 	@Nullable
 	EntityApiProvider<A, C> getProvider(EntityType<?> entityType);
 
-	interface EntityApiProvider<A, C> {
+	interface EntityApiProvider<A, C extends @Nullable Object> {
 		/**
 		 * Return an instance of API {@code A} if available in the given entity with the given context, or {@code null} otherwise.
 		 *
